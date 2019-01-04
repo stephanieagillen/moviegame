@@ -20,6 +20,10 @@ class GameController extends Controller
             ], 200);
     }
 
+    public function home(){
+        return view('home');
+    }
+
     //return the information for the selected game
     public function show($id){
         $game=Game::where(
@@ -51,6 +55,7 @@ class GameController extends Controller
 			'scores' => (null),
 			'critic_scores' => (null),
             'overall_scores' => (null),
+            'id'
     		]);
     }
 
@@ -72,10 +77,13 @@ class GameController extends Controller
     	], 200);
     }
 
-    public function destroy(Games $game){
-    	return response()->json([
-    		'message' => 'Game deleted successfully!'
-    	], 200);
+    public function destroy($id){
+        $game = Game::findOrFail($id);
+        $game->delete();
+        return 204;
+    	// return response()->json([
+    	// 	'message' => 'Game deleted successfully!'
+    	// ], 200);
     }
 
     public function __contruct() {
@@ -123,7 +131,6 @@ class GameController extends Controller
     }
 
     public function calculate(Request $request, $id){
-        //return $id;
         $game=Game::where(
             ['id'=>$id],
             ['user_id'=>Auth::user()->id]

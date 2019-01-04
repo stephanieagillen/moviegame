@@ -50175,6 +50175,33 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 	data: function data() {
@@ -50190,7 +50217,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			critic_scores: [],
 			overall_scores: [],
 			movie_location: 0
-
 		};
 	},
 	mounted: function mounted() {
@@ -50201,7 +50227,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 		readGame: function readGame() {
 			var _this = this;
 
-			var id = window.location.href.split('/#/games/').pop();
+			var id = window.location.href.split('/home#/games/').pop();
 			axios.get('/games/' + id).then(function (response) {
 				_this.name = response.data.game[0].name;
 
@@ -50243,7 +50269,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			}
 			//update players with newPlayer
 
-			var id = window.location.href.split('/#/games/').pop();
+			var id = window.location.href.split('/home#/games/').pop();
 			axios.post('/games/' + id + '/add-player', {
 				players: this.players,
 				overall_scores: this.overall_scores,
@@ -50286,28 +50312,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 			this.guesses.push(guess);
 			this.scores.push(score);
-
-			// //add guesses
-			// let guess=[];
-			// this.players.forEach(function(player, j){
-			// 		guess.push(0);
-			// })
-			// this.guesses.push(guess);
-
-
-			// //add scores
-			// let score=[];
-			// this.players.forEach(function(player, j){
-			// 		score.push(0);
-			// })
-			// this.scores.push(score);
-
-			//add critic scores
-			this.critic_scores.push(0);
-
+			this.critic_scores.push("0");
+			console.log(this.critic_scores);
 			this.newMovie = '';
 			//update players with newPlayer
-			var id = window.location.href.split('/#/games/').pop();
+			var id = window.location.href.split('/home#/games/').pop();
 			axios.post('/games/' + id + '/add-movie', {
 				movies: this.movies,
 				guesses: this.guesses,
@@ -50335,6 +50344,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			$("#play_movie_model").modal("show");
 			this.movie_location = index;
 		},
+		showInstructions: function showInstructions() {
+			$("#instructions_model").modal("show");
+		},
 		calculateMovie: function calculateMovie() {
 			var _this4 = this;
 
@@ -50344,14 +50356,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			var critic_scores = this.critic_scores;
 			var guesses = this.guesses;
 			var overall_scores = this.overall_scores;
+			console.log(critic_scores);
 
 			for (var i = 0; i < this.movies.length; i++) {
 				for (var j = 0; j < this.players.length; j++) {
 					this.scores[i][j] = Math.abs(this.critic_scores[i] - this.guesses[i][j]);
-					if (this.scores[i][j] == 0) this.scores[i][j] = -5;
-					// if(this.scores[i][j] == 0){
-					// 	this.scores[i][j] = -5;
-					// }
+					if (this.scores[i][j] == 0 && typeof this.critic_scores[i] === 'number') this.scores[i][j] = -5;
 				}
 			}
 
@@ -50364,7 +50374,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 					this.overall_scores[j] += this.scores[i][j];
 				}
 			}
-			var id = window.location.href.split('/#/games/').pop();
+			var id = window.location.href.split('/home#/games/').pop();
 			axios.post('/calculate/' + id, {
 				guesses: this.guesses,
 				critic_scores: this.critic_scores,
@@ -50402,12 +50412,28 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
+  return _c("div", { staticClass: "container", attrs: { id: "game-page" } }, [
     _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col-md-12" }, [
         _vm._m(0),
         _vm._v(" "),
-        _vm._m(1),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-success",
+            attrs: { type: "button" },
+            on: {
+              click: function($event) {
+                _vm.showInstructions()
+              }
+            }
+          },
+          [_vm._v("Instructions")]
+        ),
+        _vm._v(" "),
+        _c("div", { staticClass: "panel panel-default mt-5 mb-3" }, [
+          _c("h1", [_vm._v(_vm._s(_vm.name))])
+        ]),
         _vm._v(" "),
         _c("div", { staticClass: "table" }, [
           _c("div", { staticClass: "row" }, [
@@ -50450,65 +50476,85 @@ var render = function() {
                 ]
               ),
               _vm._v(" "),
-              _vm.players
-                ? _c(
-                    "div",
-                    _vm._l(this.players, function(player, index) {
-                      return _c("div", [_c("p", [_vm._v(_vm._s(player))])])
-                    })
-                  )
+              _vm.players.length > 0
+                ? _c("div", { staticClass: "d-inline-block mr-4" }, [
+                    _vm._m(1),
+                    _vm._v(" "),
+                    _vm.players
+                      ? _c(
+                          "div",
+                          _vm._l(this.players, function(player, index) {
+                            return _c("div", [
+                              _c("p", [_vm._v(_vm._s(player))])
+                            ])
+                          })
+                        )
+                      : _vm._e()
+                  ])
                 : _vm._e(),
               _vm._v(" "),
-              _vm.overall_scores.length > 0
-                ? _c(
-                    "div",
-                    _vm._l(this.overall_scores, function(score, index) {
-                      return _c("div", [_c("p", [_vm._v(_vm._s(score))])])
-                    })
-                  )
+              _vm.players.length > 0
+                ? _c("div", { staticClass: "d-inline-block" }, [
+                    _vm._m(2),
+                    _vm._v(" "),
+                    _vm.overall_scores.length > 0
+                      ? _c(
+                          "div",
+                          _vm._l(this.overall_scores, function(score, index) {
+                            return _c("div", [_c("p", [_vm._v(_vm._s(score))])])
+                          })
+                        )
+                      : _vm._e()
+                  ])
                 : _vm._e()
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "col-md-2" }),
             _vm._v(" "),
             _c("div", { staticClass: "col-md-4" }, [
-              _c(
-                "form",
-                {
-                  attrs: { method: "post" },
-                  on: {
-                    submit: function($event) {
-                      $event.preventDefault()
-                      return _vm.addMovie($event)
-                    }
-                  }
-                },
-                [
-                  _c("input", {
-                    directives: [
+              _vm.players.length > 0
+                ? _c("div", [
+                    _c(
+                      "form",
                       {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.newMovie,
-                        expression: "newMovie"
-                      }
-                    ],
-                    attrs: { type: "text", name: "movie" },
-                    domProps: { value: _vm.newMovie },
-                    on: {
-                      input: function($event) {
-                        if ($event.target.composing) {
-                          return
+                        attrs: { method: "post" },
+                        on: {
+                          submit: function($event) {
+                            $event.preventDefault()
+                            return _vm.addMovie($event)
+                          }
                         }
-                        _vm.newMovie = $event.target.value
-                      }
-                    }
-                  }),
-                  _c("button", { staticClass: "button btn btn-success" }, [
-                    _vm._v("Add Movie")
+                      },
+                      [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.newMovie,
+                              expression: "newMovie"
+                            }
+                          ],
+                          attrs: { type: "text", name: "movie" },
+                          domProps: { value: _vm.newMovie },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.newMovie = $event.target.value
+                            }
+                          }
+                        }),
+                        _c(
+                          "button",
+                          { staticClass: "button btn btn-success" },
+                          [_vm._v("Add Movie")]
+                        )
+                      ]
+                    )
                   ])
-                ]
-              ),
+                : _vm._e(),
               _vm._v(" "),
               _vm.movies
                 ? _c(
@@ -50518,6 +50564,7 @@ var render = function() {
                         _c(
                           "button",
                           {
+                            staticClass: "btn-movie mb-3 p-2",
                             on: {
                               click: function($event) {
                                 _vm.initPlayMovie(index)
@@ -50546,34 +50593,47 @@ var render = function() {
               { staticClass: "modal-dialog", attrs: { role: "document" } },
               [
                 _c("div", { staticClass: "modal-content" }, [
-                  _vm._m(2),
+                  _vm._m(3),
                   _vm._v(" "),
                   _c("div", { staticClass: "modal-body" }, [
-                    _c(
-                      "div",
-                      { staticClass: "form-group" },
-                      [
+                    _c("div", { staticClass: "form-group" }, [
+                      _c(
+                        "div",
+                        { staticClass: "d-inline-block" },
                         _vm._l(_vm.players, function(player, index) {
                           return _vm.guesses.length > 0
                             ? _c("div", [
-                                _c("label", { attrs: { for: "guess" } }, [
-                                  _vm._v(_vm._s(player) + ":")
-                                ]),
-                                _vm._v(" "),
+                                _c("p", [
+                                  _c("label", { attrs: { for: "guess" } }, [
+                                    _vm._v(_vm._s(player) + ":")
+                                  ])
+                                ])
+                              ])
+                            : _vm._e()
+                        })
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        { staticClass: "d-inline-block" },
+                        _vm._l(_vm.players, function(player, index) {
+                          return _vm.guesses.length > 0
+                            ? _c("div", [
                                 _c("input", {
                                   directives: [
                                     {
                                       name: "model",
-                                      rawName: "v-model",
+                                      rawName: "v-model.number",
                                       value:
                                         _vm.guesses[_vm.movie_location][index],
                                       expression:
-                                        "guesses[movie_location][index]"
+                                        "guesses[movie_location][index]",
+                                      modifiers: { number: true }
                                     }
                                   ],
                                   staticClass: "guess",
                                   attrs: {
-                                    type: "integer",
+                                    type: "number",
                                     name: "guess",
                                     id: "guess",
                                     placeholder: "Enter Guess"
@@ -50590,62 +50650,66 @@ var render = function() {
                                       _vm.$set(
                                         _vm.guesses[_vm.movie_location],
                                         index,
-                                        $event.target.value
+                                        _vm._n($event.target.value)
                                       )
+                                    },
+                                    blur: function($event) {
+                                      _vm.$forceUpdate()
                                     }
                                   }
                                 })
                               ])
                             : _vm._e()
-                        }),
+                        })
+                      ),
+                      _vm._v(" "),
+                      _c("div", [
+                        _vm._m(4),
                         _vm._v(" "),
-                        _c("div", [
-                          _c("label", { attrs: { for: "critic_score" } }, [
-                            _vm._v("Critic Score:")
-                          ]),
-                          _vm._v(" "),
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.critic_scores[_vm.movie_location],
-                                expression: "critic_scores[movie_location]"
-                              }
-                            ],
-                            attrs: {
-                              type: "integer",
-                              name: "critic_score",
-                              id: "critic_score",
-                              placeholder: "Enter Critic Score"
-                            },
-                            domProps: {
-                              value: _vm.critic_scores[_vm.movie_location]
-                            },
-                            on: {
-                              input: function($event) {
-                                if ($event.target.composing) {
-                                  return
-                                }
-                                _vm.$set(
-                                  _vm.critic_scores,
-                                  _vm.movie_location,
-                                  $event.target.value
-                                )
-                              }
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model.number",
+                              value: _vm.critic_scores[_vm.movie_location],
+                              expression: "critic_scores[movie_location]",
+                              modifiers: { number: true }
                             }
-                          })
-                        ])
-                      ],
-                      2
-                    )
+                          ],
+                          attrs: {
+                            type: "number",
+                            name: "critic_score",
+                            id: "critic_score",
+                            placeholder: "Enter Critic Score"
+                          },
+                          domProps: {
+                            value: _vm.critic_scores[_vm.movie_location]
+                          },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(
+                                _vm.critic_scores,
+                                _vm.movie_location,
+                                _vm._n($event.target.value)
+                              )
+                            },
+                            blur: function($event) {
+                              _vm.$forceUpdate()
+                            }
+                          }
+                        })
+                      ])
+                    ])
                   ]),
                   _vm._v(" "),
                   _c("div", { staticClass: "modal-footer" }, [
                     _c(
                       "button",
                       {
-                        staticClass: "btn btn-primary",
+                        staticClass: "btn btn-success",
                         attrs: { type: "button" },
                         on: { click: _vm.calculateMovie }
                       },
@@ -50665,7 +50729,9 @@ var render = function() {
               ]
             )
           ]
-        )
+        ),
+        _vm._v(" "),
+        _vm._m(5)
       ])
     ])
   ])
@@ -50675,7 +50741,7 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("a", { attrs: { href: "/" } }, [
+    return _c("a", { attrs: { href: "/home#/" } }, [
       _c("p", [_vm._v("Back to Games")])
     ])
   },
@@ -50683,15 +50749,21 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "panel panel-default" }, [
-      _c("h1", [_vm._v("Game:")])
-    ])
+    return _c("u", [_c("p", [_vm._v("Player")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("u", [_c("p", [_vm._v("Overall Score")])])
   },
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "modal-header" }, [
+      _c("h4", { staticClass: "modal-title" }, [_vm._v("Play Game")]),
+      _vm._v(" "),
       _c(
         "button",
         {
@@ -50703,10 +50775,68 @@ var staticRenderFns = [
           }
         },
         [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
-      ),
-      _vm._v(" "),
-      _c("h4", { staticClass: "modal-title" }, [_vm._v("Play Game")])
+      )
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("label", { attrs: { for: "critic_score" } }, [
+      _c("strong", [_vm._v("Critic Score:")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: { tabindex: "-1", role: "dialog", id: "instructions_model" }
+      },
+      [
+        _c(
+          "div",
+          { staticClass: "modal-dialog", attrs: { role: "document" } },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header" }, [
+                _c("h4", { staticClass: "modal-title" }, [
+                  _vm._v("Instructions")
+                ]),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "close",
+                    attrs: {
+                      type: "button",
+                      "data-dismiss": "modal",
+                      "aria-label": "Close"
+                    }
+                  },
+                  [
+                    _c("span", { attrs: { "aria-hidden": "true" } }, [
+                      _vm._v("×")
+                    ])
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("p", [
+                  _vm._v(
+                    "Enter in each player's guess, then enter the critics score. The difference between the two will be calculated in order to determine each player's score. If you guess the correct score, you will be rewarded by subtracting 5 points."
+                  )
+                ])
+              ])
+            ])
+          ]
+        )
+      ]
+    )
   }
 ]
 render._withStripped = true
@@ -50724,7 +50854,6 @@ if (false) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
 //
 //
 //
@@ -50801,9 +50930,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			axios.post('/games', {
 				name: this.game.name
 			}).then(function (response) {
+				var game_id = response.data.id;
 				_this.reset();
 				_this.games.push(response.data);
 				$("#add_game_model").modal("hide");
+				_this.$router.push({ name: 'gameIndex', params: { id: game_id } });
 				//go to the game page
 			}).catch(function (error) {
 
@@ -50817,15 +50948,32 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 				}
 			});
 		},
+		deleteGame: function deleteGame(id) {
+			var _this2 = this;
+
+			axios.delete('/games/' + id).then(function (response) {
+				_this2.readGames();
+				//go to the game page
+			}).catch(function (error) {
+
+				_this2.errors = [];
+				if (error.response.data.errors && error.response.data.errors.name) {
+
+					_this2.errors.push(error.response.data.errors.name[0]);
+				}
+				if (error.response.data.errors && error.response.data.errors.description) {
+					_this2.errors.push(error.response.data.errors.description[0]);
+				}
+			});
+		},
 		reset: function reset() {
 			this.game.name = '';
 		},
 		readGames: function readGames() {
-			var _this2 = this;
+			var _this3 = this;
 
-			console.log('test');
 			axios.get('/games-list').then(function (response) {
-				_this2.games = response.data.games;
+				_this3.games = response.data.games;
 			});
 		}
 	}
@@ -50839,14 +50987,11 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
+  return _c("div", { staticClass: "container", attrs: { id: "games-page" } }, [
     _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col-md-12" }, [
         _c("div", { staticClass: "panel panel-default" }, [
           _c("div", { staticClass: "panel-heading" }, [
-            _c("h2", [_vm._v("My Games")]),
-            _vm._v(" "),
-            _vm._m(0),
             _c("br"),
             _vm._v(" "),
             _c(
@@ -50875,10 +51020,31 @@ var render = function() {
                     _c(
                       "tbody",
                       [
-                        _vm._m(1),
+                        _vm._m(0),
                         _vm._v(" "),
                         _vm._l(_vm.games, function(game, index) {
                           return _c("tr", [
+                            _c("td", [
+                              _c(
+                                "button",
+                                {
+                                  attrs: { type: "button" },
+                                  on: {
+                                    click: function($event) {
+                                      _vm.deleteGame(game.id)
+                                    }
+                                  }
+                                },
+                                [
+                                  _c(
+                                    "span",
+                                    { attrs: { "aria-hidden": "true" } },
+                                    [_vm._v("×")]
+                                  )
+                                ]
+                              )
+                            ]),
+                            _vm._v(" "),
                             _c("td", [_c("p", [_vm._v(_vm._s(index + 1))])]),
                             _vm._v(" "),
                             _c(
@@ -50921,12 +51087,12 @@ var render = function() {
                 { staticClass: "modal-dialog", attrs: { role: "document" } },
                 [
                   _c("div", { staticClass: "modal-content" }, [
-                    _vm._m(2),
+                    _vm._m(1),
                     _vm._v(" "),
                     _c("div", { staticClass: "modal-body" }, [
                       _c("div", { staticClass: "form-group" }, [
                         _c("label", { attrs: { for: "name" } }, [
-                          _vm._v("Name:")
+                          _vm._v("New Game:")
                         ]),
                         _vm._v(" "),
                         _c("input", {
@@ -50975,7 +51141,7 @@ var render = function() {
                           attrs: { type: "button" },
                           on: { click: _vm.createGame }
                         },
-                        [_vm._v("Submit")]
+                        [_vm._v("Add Game")]
                       )
                     ])
                   ])
@@ -50993,16 +51159,9 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("h3", [
-      _c("span", { staticClass: "glyphicon glyphicon-dashboard" }),
-      _vm._v(" Assignment Dashboard ")
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
     return _c("tr", [
+      _c("th"),
+      _vm._v(" "),
       _c("th", [_vm._v("No.")]),
       _vm._v(" "),
       _c("th", [_vm._v("Name")])
@@ -51024,9 +51183,7 @@ var staticRenderFns = [
           }
         },
         [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
-      ),
-      _vm._v(" "),
-      _c("h4", { staticClass: "modal-title" }, [_vm._v("Add New Game")])
+      )
     ])
   }
 ]

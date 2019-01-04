@@ -16,3 +16,4 @@ let routes = [
 export default new VueRouter({
     routes
 });
+

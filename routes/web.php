@@ -14,13 +14,16 @@
 
 Auth::routes();
 
-Route::get('/', 'HomeController@index')->name('home');
+Route::get('/', 'HomeController@index');
+Route::get('/home', 'HomeController@home');
 Route::get('/games-list', 'GameController@list');
 Route::post('/games', 'GameController@store');
 Route::get('/games/{id}', 'GameController@show');
+Route::delete('/games/{id}', 'GameController@destroy');
 Route::post('/games/{id}/add-player', 'GameController@addPlayer');
 Route::post('/games/{id}/add-movie', 'GameController@addMovie');
 Route::post('/calculate/{id}', 'GameController@calculate');
+Route::get('/game-list', 'GameController@home');
 
 
 // Route::get('/games/{id}', 'GameController@game');

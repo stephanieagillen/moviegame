@@ -1,10 +1,11 @@
 <template>
-	<div class="container">
+	<div class="container" id="game-page">
 		<div class="row">
 			<div class="col-md-12">
-			<a href="/"><p>Back to Games</p></a>
-				<div class="panel panel-default">
-				<h1>Game:</h1>
+			<a href="/home#/"><p>Back to Games</p></a>
+			<button type="button" @click="showInstructions()" class="btn btn-success">Instructions</button>
+				<div class="panel panel-default mt-5 mb-3">
+				<h1>{{ name }}</h1>
 				</div>
 				<div class="table">
 					<div class="row">
@@ -12,26 +13,34 @@
 							<form @submit.prevent="addPlayer" method="post">
 								<input type="text" v-model="newPlayer" name="player"><button class="button btn btn-success">Add player</button>
 							</form>
-							<div v-if="players">
-								<div v-for="(player, index) in this.players">
-									<p>{{ player }}</p>
+							<div class="d-inline-block mr-4" v-if="players.length > 0">
+								<u><p>Player</p></u>
+								<div v-if="players">
+									<div v-for="(player, index) in this.players">
+										<p>{{ player }}</p>
+									</div>
 								</div>
 							</div>
-							<div v-if="overall_scores.length > 0">
-								<div v-for="(score, index) in this.overall_scores">
-									<p>{{ score }}</p>
+							<div class="d-inline-block" v-if="players.length > 0">
+								<u><p>Overall Score</p></u>
+								<div v-if="overall_scores.length > 0">
+									<div v-for="(score, index) in this.overall_scores">
+										<p>{{ score }}</p>
+									</div>
 								</div>
 							</div>
 						</div>
 						<div class="col-md-2">
 						</div>
 						<div class="col-md-4">
-							<form @submit.prevent="addMovie" method="post">
-								<input type="text" v-model="newMovie" name="movie"><button class="button btn btn-success">Add Movie</button>
-							</form>
+							<div v-if="players.length > 0">
+								<form @submit.prevent="addMovie" method="post">
+									<input type="text" v-model="newMovie" name="movie"><button class="button btn btn-success">Add Movie</button>
+								</form>
+							</div>
 							<div v-if="movies">
 								<div v-for="(movie, index) in this.movies">
-									<button @click="initPlayMovie(index)">{{ movie }}</button> 
+									<button @click="initPlayMovie(index)" class="btn-movie mb-3 p-2">{{ movie }}</button> 
 								</div>
 							</div>
 						</div>
@@ -41,25 +50,43 @@
 					<div class="modal-dialog" role="document">
 						<div class="modal-content">
 							<div class="modal-header">
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 								<h4 class="modal-title">Play Game</h4>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 							</div>
 							<div class="modal-body">
 								<div class="form-group">
+								<div class="d-inline-block">
 									<div v-for="(player, index) in players" v-if="guesses.length > 0">
-										<label for="guess">{{ player }}:</label>
-										<input type="integer" name="guess" id="guess" placeholder="Enter Guess" class="guess" v-model="guesses[movie_location][index]"></input>
-										
+										<p><label for="guess">{{ player }}:</label></p>
 									</div>
+								</div>
+								<div class="d-inline-block">
+									<div v-for="(player, index) in players" v-if="guesses.length > 0">
+										<input type="number" name="guess" id="guess" placeholder="Enter Guess" class="guess" v-model.number="guesses[movie_location][index]"></input>
+									</div>
+								</div>
 									<div>
-										<label for="critic_score">Critic Score:</label>
-										<input type="integer" name="critic_score" id="critic_score" placeholder="Enter Critic Score" v-model="critic_scores[movie_location]"></input>
+										<label for="critic_score"><strong>Critic Score:</strong></label>
+										<input type="number" name="critic_score" id="critic_score" placeholder="Enter Critic Score" v-model.number="critic_scores[movie_location]"></input>
 									</div>
 								</div>
 							</div>
 							<div class="modal-footer">
-								<button type="button" @click="calculateMovie" class="btn btn-primary">Submit</button>
+								<button type="button" @click="calculateMovie" class="btn btn-success">Submit</button>
 								<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal fade" tabindex="-1" role="dialog" id="instructions_model">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h4 class="modal-title">Instructions</h4>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							</div>
+							<div class="modal-body">
+								<p>Enter in each player's guess, then enter the critics score. The difference between the two will be calculated in order to determine each player's score. If you guess the correct score, you will be rewarded by subtracting 5 points.</p>
 							</div>
 						</div>
 					</div>
@@ -83,8 +110,7 @@ export default {
 			scores: [],
 			critic_scores: [],
 			overall_scores:[],
-			movie_location: 0
-
+			movie_location: 0,
 		}
 	},
 	mounted() {
@@ -92,7 +118,7 @@ export default {
 	},
 	methods: {
 		readGame(){
-			let id = window.location.href.split('/#/games/').pop();
+			let id = window.location.href.split('/home#/games/').pop();
 			axios.get('/games/'+ id)
 				.then(response => {
 					this.name = response.data.game[0].name;
@@ -133,7 +159,7 @@ export default {
 			}
 			//update players with newPlayer
 
-			let id = window.location.href.split('/#/games/').pop();
+			let id = window.location.href.split('/home#/games/').pop();
 			axios.post('/games/' + id + '/add-player', {
 				players: this.players,
 				overall_scores: this.overall_scores,
@@ -177,29 +203,11 @@ export default {
 
 			this.guesses.push(guess);
 			this.scores.push(score);
-
-			// //add guesses
-			// let guess=[];
-			// this.players.forEach(function(player, j){
-			// 		guess.push(0);
-			// })
-			// this.guesses.push(guess);
-
-
-			// //add scores
-			// let score=[];
-			// this.players.forEach(function(player, j){
-			// 		score.push(0);
-			// })
-			// this.scores.push(score);
-
-			//add critic scores
-			this.critic_scores.push(0);
-			
-
+			this.critic_scores.push("0");
+			console.log(this.critic_scores);
 			this.newMovie = '';
 			//update players with newPlayer
-			let id = window.location.href.split('/#/games/').pop();
+			let id = window.location.href.split('/home#/games/').pop();
 			axios.post('/games/' + id + '/add-movie', {
 				movies: this.movies,
 				guesses: this.guesses,
@@ -231,23 +239,22 @@ export default {
 			$("#play_movie_model").modal("show");
 			this.movie_location = index;
 		},
+		showInstructions(){
+			$("#instructions_model").modal("show");
+		},
 		calculateMovie(){
-
 			let players = this.players;
 			let movies = this.movies;
 			let scores = this.scores;
 			let critic_scores = this.critic_scores;
 			let guesses = this.guesses;
 			let overall_scores=this.overall_scores;
-
+			console.log(critic_scores);
 
 			for(var i=0; i < this.movies.length; i++){
 				for(var j=0; j < this.players.length; j++){
 					this.scores[i][j] = Math.abs(this.critic_scores[i]-this.guesses[i][j]);
-					if (this.scores[i][j] == 0) this.scores[i][j] = -5;
-					// if(this.scores[i][j] == 0){
-					// 	this.scores[i][j] = -5;
-					// }
+					if ((this.scores[i][j] == 0) && (typeof this.critic_scores[i]) === 'number') this.scores[i][j] = -5;
 				}
 			}
 
@@ -260,7 +267,7 @@ export default {
 					this.overall_scores[j] += this.scores[i][j];
 				}
 			}
-			let id = window.location.href.split('/#/games/').pop();
+			let id = window.location.href.split('/home#/games/').pop();
 			axios.post('/calculate/' + id, {
 				guesses: this.guesses,
 				critic_scores: this.critic_scores,

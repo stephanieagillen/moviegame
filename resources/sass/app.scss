@@ -12,3 +12,64 @@
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
+
+.table-responsive {
+  width: fit-content;
+}
+
+.btn-success {
+  background-color: #336699;
+  border-color: #336699;
+}
+
+.btn-success:hover {
+  background-color: #999999;
+  border-color: #999999;
+}
+
+#games-page .btn-success {
+  margin-bottom: 2em;
+}
+
+.table-bordered {
+    border: 0px solid #dee2e6;
+}
+
+.btn-success:focus,
+.btn-success.focus {
+  -webkit-box-shadow: 0 0 0 0.2rem rgba(153, 153, 153, 0.5);
+          box-shadow: 0 0 0 0.2rem rgba(153, 153, 153, 0.5);
+}
+
+.btn-success.disabled,
+.btn-success:disabled {
+  color: #fff;
+  background-color: #336699;
+  border-color: #336699;
+}
+
+.btn-success:not(:disabled):not(.disabled):active,
+.btn-success:not(:disabled):not(.disabled).active,
+.show > .btn-success.dropdown-toggle {
+  color: #fff;
+  background-color: #666666;
+  border-color: #666666;
+}
+
+.btn-success:not(:disabled):not(.disabled):active:focus, .btn-success:not(:disabled):not(.disabled).active:focus, .show > .btn-success.dropdown-toggle:focus {
+  -webkit-box-shadow: 0 0 0 0.2rem rgba(153, 153, 153, 0.5);
+          box-shadow: 0 0 0 0.2rem rgba(153, 153, 153, 0.5);
+}
+
+.btn-movie {
+	width: 100%;
+}
+
+#game-page input {
+	margin: 0 .5em 1em 0;
+}
+
+a {
+	color: #336699;
+}
+
