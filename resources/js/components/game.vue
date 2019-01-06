@@ -73,7 +73,6 @@
 							</div>
 							<div class="modal-footer">
 								<button type="button" @click="calculateMovie" class="btn btn-success">Submit</button>
-								<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 							</div>
 						</div>
 					</div>
@@ -123,42 +122,39 @@ export default {
 				.then(response => {
 					this.name = response.data.game[0].name;
 
-					if(response.data.game[0].players != null ) {
-						this.players = response.data.game[0].players;
-					}
-					if(response.data.game[0].movies != null ) {
-						this.movies = response.data.game[0].movies;
-					}
-					if(response.data.game[0].guesses != null ) {
-						this.guesses = response.data.game[0].guesses;
-					}
-					if(response.data.game[0].scores != null ) {
-						this.scores = response.data.game[0].scores;
-					}
-					if(response.data.game[0].critic_scores != null ) {
-						this.critic_scores = response.data.game[0].critic_scores;
-					}
-					if(response.data.game[0].overall_scores != null ) {
-						this.overall_scores = response.data.game[0].overall_scores;
-					}
+					//If there is stored information about the game, pass into the vue variables.
+					if(response.data.game[0].players != null ) this.players = response.data.game[0].players;
+					
+					if(response.data.game[0].movies != null ) this.movies = response.data.game[0].movies;
+					
+					if(response.data.game[0].guesses != null ) this.guesses = response.data.game[0].guesses;
+					
+					if(response.data.game[0].scores != null ) this.scores = response.data.game[0].scores;
+					
+					if(response.data.game[0].critic_scores != null ) this.critic_scores = response.data.game[0].critic_scores;
+					
+					if(response.data.game[0].overall_scores != null ) this.overall_scores = response.data.game[0].overall_scores;
+					
 			});
 		},
 		addPlayer(){
+			//Retrieve the newPlayer value and push it to the player array
 			let newPlayer = this.newPlayer;
 			this.players.push(newPlayer);
 			this.newPlayer = '';
-			this.overall_scores.push(0);
-			console.log(this.movies.length);
 
+			//Add an index to overall_scores array
+			this.overall_scores.push(0);
+
+			//If there are movies, add indexes to the scores and guesses arrays
 			if(this.movies.length > 0) {
-				console.log('in if statement');
 				for(let i=0; this.movies.length>i; i++) {
 						this.scores[i].push(0);
 						this.guesses[i].push(0);
 				}
 			}
-			//update players with newPlayer
 
+			//push information to database
 			let id = window.location.href.split('/home#/games/').pop();
 			axios.post('/games/' + id + '/add-player', {
 				players: this.players,
@@ -172,7 +168,6 @@ export default {
 					this.overall_scores.push(response.data);
 					this.guesses.push(response.data);
 					this.scores.push(response.data);
-					//go to the game page
 				})
 			.catch(error => {
                    this.errors = [];
@@ -186,27 +181,29 @@ export default {
                });
            },
 		addMovie(){
+			//Retrieve the newMovie value and push it to the movie array
 			let newMovie = this.newMovie;
 			this.movies.push(newMovie);
 
 			let movie_location = this.movies.length-1;
 			let players = this.players;
-
-			//determine if previous players have been added
 			let guess=[];
 			let score=[];
 
+			//Add an index to overall_scores array
 			for(let j=0; this.players.length>j; j++){
 					score.push(0);
 					guess.push(0);
 				}
-
+			//Add indexes to the scores and guesses arrays
 			this.guesses.push(guess);
 			this.scores.push(score);
 			this.critic_scores.push("0");
-			console.log(this.critic_scores);
+
+			//reset newMovie variable
 			this.newMovie = '';
-			//update players with newPlayer
+
+			//push information to database
 			let id = window.location.href.split('/home#/games/').pop();
 			axios.post('/games/' + id + '/add-movie', {
 				movies: this.movies,
@@ -220,8 +217,6 @@ export default {
 					this.guesses.push(response.data);
 					this.scores.push(response.data);
 					this.critic_scores.push(response.data);
-					//$("#play_movie_model").modal("hide");
-					//go to the game page
 				})
 			.catch(error => {
                    this.errors = [];
@@ -236,21 +231,18 @@ export default {
 
 		},
 		initPlayMovie(index){
+			//show movie model
 			$("#play_movie_model").modal("show");
 			this.movie_location = index;
 		},
 		showInstructions(){
+			//show instructions model
 			$("#instructions_model").modal("show");
 		},
 		calculateMovie(){
-			let players = this.players;
-			let movies = this.movies;
-			let scores = this.scores;
-			let critic_scores = this.critic_scores;
-			let guesses = this.guesses;
-			let overall_scores=this.overall_scores;
-			console.log(critic_scores);
-
+			//loop through guesses array and critic_scores array to calculate the score of each player for each game
+			//the score value is caluclated by taking the absolute value of the difference between critic_scores and guesses
+			//If the score value returns 0, give the player a score of -5 
 			for(var i=0; i < this.movies.length; i++){
 				for(var j=0; j < this.players.length; j++){
 					this.scores[i][j] = Math.abs(this.critic_scores[i]-this.guesses[i][j]);
@@ -258,15 +250,19 @@ export default {
 				}
 			}
 
+			//reset the overall score values to 0 so they can be recalculated in the following function
 			for(var j=0; j<this.players.length; j++){
 				this.overall_scores[j] = 0;
 			}
 
+			//add all of the scores for each player
 			for(var j=0; j<this.players.length; j++){
 				for(var i=0; i<this.movies.length; i++){
 					this.overall_scores[j] += this.scores[i][j];
 				}
 			}
+
+			//push information to database
 			let id = window.location.href.split('/home#/games/').pop();
 			axios.post('/calculate/' + id, {
 				guesses: this.guesses,
@@ -282,8 +278,6 @@ export default {
 					this.critic_scores.push(response.data);
 					this.scores.push(response.data);
 					this.overall_scores.push(response.data);
-					
-					//go to the game page
 				})
 			.catch(error => {
 			       this.errors = [];

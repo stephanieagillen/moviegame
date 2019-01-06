@@ -29,7 +29,7 @@ Vue.use(VueRouter)
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key)))
 
-Vue.component('example-component', require('./components/ExampleComponent.vue'));
+
 Vue.component('games', require('./components/games.vue'));
 Vue.component('game', require('./components/game.vue'));
 
