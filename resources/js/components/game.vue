@@ -85,7 +85,7 @@
 								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 							</div>
 							<div class="modal-body">
-								<p>Enter in each player's guess, then enter the critics score. The difference between the two will be calculated in order to determine each player's score. If you guess the correct score, you will be rewarded by subtracting 5 points.</p>
+								<p>Enter all of the players. Enter all of the movies. Click on each movie and have each player guess the movie rating. Enter in the critics rating from your favorite movie rating source(e.g. Rotten Tomatoes, IMDB, etc.) The absolute difference between the player's guess and the critic's rating will be calculated in order to determine each player's score. If a player guesses the critic's rating, he or she will be rewarded with a score of -5. The scores from all of the movies will determine each player's overall score.  The player with the lowest score wins!</p>
 							</div>
 						</div>
 					</div>
