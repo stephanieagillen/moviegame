@@ -10,7 +10,7 @@
 				<div class="table">
 					<div class="row">
 						<div class="col-md-4">
-							<form @submit.prevent="addPlayer" method="post">
+							<form @submit.prevent="addPlayer" method="post" class="mb-2">
 								<input type="text" v-model="newPlayer" name="player"><button class="button btn btn-success">Add player</button>
 							</form>
 							<div class="d-inline-block mr-4" v-if="players.length > 0">
@@ -34,8 +34,8 @@
 						</div>
 						<div class="col-md-4">
 							<div v-if="players.length > 0">
-								<form @submit.prevent="addMovie" method="post">
-									<input type="text" v-model="newMovie" name="movie"><button class="button btn btn-success">Add Movie</button>
+								<form @submit.prevent="addMovie" method="post" class="mb-2">
+									<input type="text" v-model="newMovie" name="movie"><button class="button btn btn-success btn-add">Add Movie</button>
 								</form>
 							</div>
 							<div v-if="movies">
@@ -62,7 +62,7 @@
 								</div>
 								<div class="d-inline-block">
 									<div v-for="(player, index) in players" v-if="guesses.length > 0">
-										<input type="number" name="guess" id="guess" placeholder="Enter Guess" class="guess" v-model.number="guesses[movie_location][index]"></input>
+										<input type="number" name="guess" id="guess" placeholder="Enter Guess" v-bind:min="0" v-bind:max="100" class="guess" v-model.number="guesses[movie_location][index]"></input>
 									</div>
 								</div>
 									<div>
