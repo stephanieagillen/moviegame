@@ -50357,14 +50357,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			}
 
 			//reset the overall score values to 0 so they can be recalculated in the following function
-			for (var j = 0; j < this.players.length; j++) {
-				this.overall_scores[j] = 0;
+			for (var _j = 0; _j < this.players.length; _j++) {
+				this.overall_scores[_j] = 0;
 			}
 
 			//add all of the scores for each player
-			for (var j = 0; j < this.players.length; j++) {
-				for (var i = 0; i < this.movies.length; i++) {
-					this.overall_scores[j] += this.scores[i][j];
+			for (var _j2 = 0; _j2 < this.players.length; _j2++) {
+				for (var _i = 0; _i < this.movies.length; _i++) {
+					this.overall_scores[_j2] += this.scores[_i][_j2];
 				}
 			}
 
@@ -50434,6 +50434,7 @@ var render = function() {
               _c(
                 "form",
                 {
+                  staticClass: "mb-2",
                   attrs: { method: "post" },
                   on: {
                     submit: function($event) {
@@ -50510,6 +50511,7 @@ var render = function() {
                     _c(
                       "form",
                       {
+                        staticClass: "mb-2",
                         attrs: { method: "post" },
                         on: {
                           submit: function($event) {
@@ -50541,7 +50543,7 @@ var render = function() {
                         }),
                         _c(
                           "button",
-                          { staticClass: "button btn btn-success" },
+                          { staticClass: "button btn btn-success btn-add" },
                           [_vm._v("Add Movie")]
                         )
                       ]
@@ -50629,7 +50631,9 @@ var render = function() {
                                     type: "number",
                                     name: "guess",
                                     id: "guess",
-                                    placeholder: "Enter Guess"
+                                    placeholder: "Enter Guess",
+                                    min: 0,
+                                    max: 100
                                   },
                                   domProps: {
                                     value:
@@ -50812,7 +50816,7 @@ var staticRenderFns = [
               _c("div", { staticClass: "modal-body" }, [
                 _c("p", [
                   _vm._v(
-                    "Enter in each player's guess, then enter the critics score. The difference between the two will be calculated in order to determine each player's score. If you guess the correct score, you will be rewarded by subtracting 5 points."
+                    "Enter all of the players. Enter all of the movies. Click on each movie and have each player guess the movie rating. Enter in the critics rating from your favorite movie rating source(e.g. Rotten Tomatoes, IMDB, etc.) The absolute difference between the player's guess and the critic's rating will be calculated in order to determine each player's score. If a player guesses the critic's rating, he or she will be rewarded with a score of -5. The scores from all of the movies will determine each player's overall score.  The player with the lowest score wins!"
                   )
                 ])
               ])
@@ -50906,11 +50910,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 	methods: {
 		initAddGame: function initAddGame() {
+			//show game model
 			$("#add_game_model").modal("show");
 		},
 		createGame: function createGame() {
 			var _this = this;
 
+			//create a new game in the database
 			axios.post('/games', {
 				name: this.game.name
 			}).then(function (response) {
@@ -50918,10 +50924,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 				_this.reset();
 				_this.games.push(response.data);
 				$("#add_game_model").modal("hide");
+				//go to the game
 				_this.$router.push({ name: 'gameIndex', params: { id: game_id } });
-				//go to the game page
 			}).catch(function (error) {
-
 				_this.errors = [];
 				if (error.response.data.errors && error.response.data.errors.name) {
 
@@ -50935,9 +50940,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 		deleteGame: function deleteGame(id) {
 			var _this2 = this;
 
+			//delete game in database
 			axios.delete('/games/' + id).then(function (response) {
 				_this2.readGames();
-				//go to the game page
 			}).catch(function (error) {
 
 				_this2.errors = [];
@@ -50956,6 +50961,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 		readGames: function readGames() {
 			var _this3 = this;
 
+			//retrieve all of the users games from the database
 			axios.get('/games-list').then(function (response) {
 				_this3.games = response.data.games;
 			});

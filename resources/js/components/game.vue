@@ -243,21 +243,21 @@ export default {
 			//loop through guesses array and critic_scores array to calculate the score of each player for each game
 			//the score value is caluclated by taking the absolute value of the difference between critic_scores and guesses
 			//If the score value returns 0, give the player a score of -5 
-			for(var i=0; i < this.movies.length; i++){
-				for(var j=0; j < this.players.length; j++){
+			for(let i=0; i < this.movies.length; i++){
+				for(let j=0; j < this.players.length; j++){
 					this.scores[i][j] = Math.abs(this.critic_scores[i]-this.guesses[i][j]);
 					if ((this.scores[i][j] == 0) && (typeof this.critic_scores[i]) === 'number') this.scores[i][j] = -5;
 				}
 			}
 
 			//reset the overall score values to 0 so they can be recalculated in the following function
-			for(var j=0; j<this.players.length; j++){
+			for(let j=0; j<this.players.length; j++){
 				this.overall_scores[j] = 0;
 			}
 
 			//add all of the scores for each player
-			for(var j=0; j<this.players.length; j++){
-				for(var i=0; i<this.movies.length; i++){
+			for(let j=0; j<this.players.length; j++){
+				for(let i=0; i<this.movies.length; i++){
 					this.overall_scores[j] += this.scores[i][j];
 				}
 			}

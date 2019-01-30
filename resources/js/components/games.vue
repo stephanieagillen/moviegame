@@ -65,9 +65,11 @@
 		},
 		methods: {
 			initAddGame(){
+				//show game model
 				$("#add_game_model").modal("show");
 			},
 			createGame(){
+				//create a new game in the database
 				axios.post('/games', {
 					name: this.game.name
 				})
@@ -76,11 +78,10 @@
 						this.reset();
 						this.games.push(response.data);
 						$("#add_game_model").modal("hide");
+						//go to the game
 						this.$router.push({ name: 'gameIndex', params: { id: game_id}});
-						//go to the game page
 					})
 				.catch(error => {
- 
                        this.errors = [];
                        if (error.response.data.errors && error.response.data.errors.name) {
  
@@ -95,10 +96,10 @@
 
            },
            deleteGame(id){
+           		//delete game in database
 				axios.delete('/games/' + id)
 					.then(response => {
 						this.readGames();
-						//go to the game page
 					})
 				.catch(error => {
  
@@ -118,6 +119,7 @@
 				this.game.name='';
 			},
 			readGames(){
+				//retrieve all of the users games from the database
 				axios.get('/games-list')
 					.then(response => {
 						this.games = response.data.games;

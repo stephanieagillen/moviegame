@@ -81,9 +81,6 @@ class GameController extends Controller
         $game = Game::findOrFail($id);
         $game->delete();
         return 204;
-    	// return response()->json([
-    	// 	'message' => 'Game deleted successfully!'
-    	// ], 200);
     }
 
     public function __contruct() {
