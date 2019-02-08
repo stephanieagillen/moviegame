@@ -50228,85 +50228,40 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 		readGame: function readGame() {
 			var _this = this;
 
-			var lunch = {
-				sandwich: 'turkey',
-				chips: 'Cape Cod',
-				snack: 'Cookies',
-				drink: 'Pepsi',
-				calories: 325,
-				picnic: true
-			};
-
-			var _iteratorNormalCompletion = true;
-			var _didIteratorError = false;
-			var _iteratorError = undefined;
-
-			try {
-				for (var _iterator = Object.entries(lunch)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-					var _ref = _step.value;
-
-					var _ref2 = _slicedToArray(_ref, 2);
-
-					var key = _ref2[0];
-					var value = _ref2[1];
-
-					console.log(key + ': ' + value);
-				}
-
-				// lunch.forEach(([key,value])) => {
-				// 	console.log(`${key}: ${value}`);
-				// }
-
-			} catch (err) {
-				_didIteratorError = true;
-				_iteratorError = err;
-			} finally {
-				try {
-					if (!_iteratorNormalCompletion && _iterator.return) {
-						_iterator.return();
-					}
-				} finally {
-					if (_didIteratorError) {
-						throw _iteratorError;
-					}
-				}
-			}
-
+			//Retrieve game information from database
 			var id = window.location.href.split('/home#/games/').pop();
 			axios.get('/games/' + id).then(function (response) {
-
+				//Assign the response data to the variable 'response_data'
 				var response_data = response.data.game[0];
 
-				_this.name = response_data.name;
-
-				var _iteratorNormalCompletion2 = true;
-				var _didIteratorError2 = false;
-				var _iteratorError2 = undefined;
+				//Assign each key's value to the view if it is not null 
+				//e.g. name, players, movies, guesses, scores
+				var _iteratorNormalCompletion = true;
+				var _didIteratorError = false;
+				var _iteratorError = undefined;
 
 				try {
-					for (var _iterator2 = Object.entries(response_data)[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-						var _ref3 = _step2.value;
+					for (var _iterator = Object.entries(response_data)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+						var _ref = _step.value;
 
-						var _ref4 = _slicedToArray(_ref3, 2);
+						var _ref2 = _slicedToArray(_ref, 2);
 
-						var _key = _ref4[0];
-						var _value = _ref4[1];
+						var key = _ref2[0];
+						var value = _ref2[1];
 
-						console.log(_key + ': ' + _value);
-						if (response_data[_key] != null) _this[_key] = response_data[_key];
-						console.log(response_data[_key]);
+						if (response_data[key] != null) _this[key] = value;
 					}
 				} catch (err) {
-					_didIteratorError2 = true;
-					_iteratorError2 = err;
+					_didIteratorError = true;
+					_iteratorError = err;
 				} finally {
 					try {
-						if (!_iteratorNormalCompletion2 && _iterator2.return) {
-							_iterator2.return();
+						if (!_iteratorNormalCompletion && _iterator.return) {
+							_iterator.return();
 						}
 					} finally {
-						if (_didIteratorError2) {
-							throw _iteratorError2;
+						if (_didIteratorError) {
+							throw _iteratorError;
 						}
 					}
 				}
@@ -50331,7 +50286,7 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 				}
 			}
 
-			//push information to database
+			//Push information to database
 			var id = window.location.href.split('/home#/games/').pop();
 			axios.post('/games/' + id + '/add-player', {
 				players: this.players,
@@ -50345,13 +50300,7 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 				_this2.guesses.push(response.data);
 				_this2.scores.push(response.data);
 			}).catch(function (error) {
-				_this2.errors = [];
-				if (error.response.data.errors && error.response.data.errors.name) {
-					_this2.errors.push(error.response.data.errors.name[0]);
-				}
-				if (error.response.data.errors && error.response.data.errors.description) {
-					_this2.errors.push(error.response.data.errors.description[0]);
-				}
+				console.error(error);
 			});
 		},
 		addMovie: function addMovie() {
@@ -50393,29 +50342,23 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 				_this3.scores.push(response.data);
 				_this3.critic_scores.push(response.data);
 			}).catch(function (error) {
-				_this3.errors = [];
-				if (error.responfse.data.errors && error.response.data.errors.name) {
-					_this3.errors.push(error.response.data.errors.name[0]);
-				}
-				if (error.response.data.errors && error.response.data.errors.description) {
-					_this3.errors.push(error.response.data.errors.description[0]);
-				}
+				console.error(error);
 			});
 		},
 		initPlayMovie: function initPlayMovie(index) {
-			//show movie model
+			//Show movie model
 			$("#play_movie_model").modal("show");
 			this.movie_location = index;
 		},
 		showInstructions: function showInstructions() {
-			//show instructions model
+			//Show instructions model
 			$("#instructions_model").modal("show");
 		},
 		calculateMovie: function calculateMovie() {
 			var _this4 = this;
 
-			//loop through guesses array and critic_scores array to calculate the score of each player for each game
-			//the score value is caluclated by taking the absolute value of the difference between critic_scores and guesses
+			//Loop through guesses array and critic_scores array to calculate the score of each player for each game
+			//The score value is caluclated by taking the absolute value of the difference between critic_scores and guesses
 			//If the score value returns 0, give the player a score of -5 
 			for (var i = 0; i < this.movies.length; i++) {
 				for (var j = 0; j < this.players.length; j++) {
@@ -50424,19 +50367,19 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 				}
 			}
 
-			//reset the overall score values to 0 so they can be recalculated in the following function
+			//Reset the overall score values to 0 so they can be recalculated in the following function
 			for (var _j = 0; _j < this.players.length; _j++) {
 				this.overall_scores[_j] = 0;
 			}
 
-			//add all of the scores for each player
+			//Add all of the scores for each player
 			for (var _j2 = 0; _j2 < this.players.length; _j2++) {
 				for (var _i = 0; _i < this.movies.length; _i++) {
 					this.overall_scores[_j2] += this.scores[_i][_j2];
 				}
 			}
 
-			//push information to database
+			//Push calculated information to the database
 			var id = window.location.href.split('/home#/games/').pop();
 			axios.post('/calculate/' + id, {
 				guesses: this.guesses,
@@ -50452,14 +50395,7 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 				_this4.scores.push(response.data);
 				_this4.overall_scores.push(response.data);
 			}).catch(function (error) {
-				_this4.errors = [];
-				if (error.response.data.errors && error.response.data.errors.name) {
-
-					_this4.errors.push(error.response.data.errors.name[0]);
-				}
-				if (error.response.data.errors && error.response.data.errors.description) {
-					_this4.errors.push(error.response.data.errors.description[0]);
-				}
+				console.error(error);
 			});
 		}
 	}

@@ -127,7 +127,7 @@ export default {
 					//Assign each key's value to the view if it is not null 
 					//e.g. name, players, movies, guesses, scores
 					for(const[key, value] of Object.entries(response_data)){
-						if(response_data[key] != null) this[key] = response_data[key];
+						if(response_data[key] != null) this[key] = value;
 					}
 			});
 		},
@@ -164,14 +164,7 @@ export default {
 					this.scores.push(response.data);
 				})
 			.catch(error => {
-                   this.errors = [];
-                   if (error.response.data.errors && error.response.data.errors.name) {
-                       this.errors.push(error.response.data.errors.name[0]);
-                   }
-			if (error.response.data.errors && error.response.data.errors.description)
-                  {
-                       this.errors.push(error.response.data.errors.description[0]);
-                   }
+                   console.error(error);
                });
            },
 		addMovie(){
@@ -213,29 +206,22 @@ export default {
 					this.critic_scores.push(response.data);
 				})
 			.catch(error => {
-                   this.errors = [];
-                   if (error.responfse.data.errors && error.response.data.errors.name) {
-                       this.errors.push(error.response.data.errors.name[0]);
-                   }
-			if (error.response.data.errors && error.response.data.errors.description)
-                  {
-                       this.errors.push(error.response.data.errors.description[0]);
-                   }
+                   console.error(error);
                });
 
 		},
 		initPlayMovie(index){
-			//show movie model
+			//Show movie model
 			$("#play_movie_model").modal("show");
 			this.movie_location = index;
 		},
 		showInstructions(){
-			//show instructions model
+			//Show instructions model
 			$("#instructions_model").modal("show");
 		},
 		calculateMovie(){
-			//loop through guesses array and critic_scores array to calculate the score of each player for each game
-			//the score value is caluclated by taking the absolute value of the difference between critic_scores and guesses
+			//Loop through guesses array and critic_scores array to calculate the score of each player for each game
+			//The score value is caluclated by taking the absolute value of the difference between critic_scores and guesses
 			//If the score value returns 0, give the player a score of -5 
 			for(let i=0; i < this.movies.length; i++){
 				for(let j=0; j < this.players.length; j++){
@@ -244,19 +230,19 @@ export default {
 				}
 			}
 
-			//reset the overall score values to 0 so they can be recalculated in the following function
+			//Reset the overall score values to 0 so they can be recalculated in the following function
 			for(let j=0; j<this.players.length; j++){
 				this.overall_scores[j] = 0;
 			}
 
-			//add all of the scores for each player
+			//Add all of the scores for each player
 			for(let j=0; j<this.players.length; j++){
 				for(let i=0; i<this.movies.length; i++){
 					this.overall_scores[j] += this.scores[i][j];
 				}
 			}
 
-			//push information to database
+			//Push calculated information to the database
 			let id = window.location.href.split('/home#/games/').pop();
 			axios.post('/calculate/' + id, {
 				guesses: this.guesses,
@@ -274,17 +260,10 @@ export default {
 					this.overall_scores.push(response.data);
 				})
 			.catch(error => {
-			       this.errors = [];
-			       if (error.response.data.errors && error.response.data.errors.name) {
-
-			           this.errors.push(error.response.data.errors.name[0]);
-			       }
-			if (error.response.data.errors && error.response.data.errors.description)
-			      {
-			           this.errors.push(error.response.data.errors.description[0]);
-			       }
-			   });
-       }
+                   console.error(error);
+               });
+	   },
+	   
     }
 }
 </script>
