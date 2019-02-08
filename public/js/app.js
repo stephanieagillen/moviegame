@@ -50104,6 +50104,8 @@ var routes = [{
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
 //
 //
 //
@@ -50226,22 +50228,88 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 		readGame: function readGame() {
 			var _this = this;
 
+			var lunch = {
+				sandwich: 'turkey',
+				chips: 'Cape Cod',
+				snack: 'Cookies',
+				drink: 'Pepsi',
+				calories: 325,
+				picnic: true
+			};
+
+			var _iteratorNormalCompletion = true;
+			var _didIteratorError = false;
+			var _iteratorError = undefined;
+
+			try {
+				for (var _iterator = Object.entries(lunch)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+					var _ref = _step.value;
+
+					var _ref2 = _slicedToArray(_ref, 2);
+
+					var key = _ref2[0];
+					var value = _ref2[1];
+
+					console.log(key + ': ' + value);
+				}
+
+				// lunch.forEach(([key,value])) => {
+				// 	console.log(`${key}: ${value}`);
+				// }
+
+			} catch (err) {
+				_didIteratorError = true;
+				_iteratorError = err;
+			} finally {
+				try {
+					if (!_iteratorNormalCompletion && _iterator.return) {
+						_iterator.return();
+					}
+				} finally {
+					if (_didIteratorError) {
+						throw _iteratorError;
+					}
+				}
+			}
+
 			var id = window.location.href.split('/home#/games/').pop();
 			axios.get('/games/' + id).then(function (response) {
-				_this.name = response.data.game[0].name;
 
-				//If there is stored information about the game, pass into the vue variables.
-				if (response.data.game[0].players != null) _this.players = response.data.game[0].players;
+				var response_data = response.data.game[0];
 
-				if (response.data.game[0].movies != null) _this.movies = response.data.game[0].movies;
+				_this.name = response_data.name;
 
-				if (response.data.game[0].guesses != null) _this.guesses = response.data.game[0].guesses;
+				var _iteratorNormalCompletion2 = true;
+				var _didIteratorError2 = false;
+				var _iteratorError2 = undefined;
 
-				if (response.data.game[0].scores != null) _this.scores = response.data.game[0].scores;
+				try {
+					for (var _iterator2 = Object.entries(response_data)[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+						var _ref3 = _step2.value;
 
-				if (response.data.game[0].critic_scores != null) _this.critic_scores = response.data.game[0].critic_scores;
+						var _ref4 = _slicedToArray(_ref3, 2);
 
-				if (response.data.game[0].overall_scores != null) _this.overall_scores = response.data.game[0].overall_scores;
+						var _key = _ref4[0];
+						var _value = _ref4[1];
+
+						console.log(_key + ': ' + _value);
+						if (response_data[_key] != null) _this[_key] = response_data[_key];
+						console.log(response_data[_key]);
+					}
+				} catch (err) {
+					_didIteratorError2 = true;
+					_iteratorError2 = err;
+				} finally {
+					try {
+						if (!_iteratorNormalCompletion2 && _iterator2.return) {
+							_iterator2.return();
+						}
+					} finally {
+						if (_didIteratorError2) {
+							throw _iteratorError2;
+						}
+					}
+				}
 			});
 		},
 		addPlayer: function addPlayer() {

@@ -117,24 +117,18 @@ export default {
 	},
 	methods: {
 		readGame(){
+			//Retrieve game information from database
 			let id = window.location.href.split('/home#/games/').pop();
 			axios.get('/games/'+ id)
 				.then(response => {
-					this.name = response.data.game[0].name;
+					//Assign the response data to the variable 'response_data'
+					const response_data = response.data.game[0];
 
-					//If there is stored information about the game, pass into the vue variables.
-					if(response.data.game[0].players != null ) this.players = response.data.game[0].players;
-					
-					if(response.data.game[0].movies != null ) this.movies = response.data.game[0].movies;
-					
-					if(response.data.game[0].guesses != null ) this.guesses = response.data.game[0].guesses;
-					
-					if(response.data.game[0].scores != null ) this.scores = response.data.game[0].scores;
-					
-					if(response.data.game[0].critic_scores != null ) this.critic_scores = response.data.game[0].critic_scores;
-					
-					if(response.data.game[0].overall_scores != null ) this.overall_scores = response.data.game[0].overall_scores;
-					
+					//Assign each key's value to the view if it is not null 
+					//e.g. name, players, movies, guesses, scores
+					for(const[key, value] of Object.entries(response_data)){
+						if(response_data[key] != null) this[key] = response_data[key];
+					}
 			});
 		},
 		addPlayer(){
@@ -154,7 +148,7 @@ export default {
 				}
 			}
 
-			//push information to database
+			//Push information to database
 			let id = window.location.href.split('/home#/games/').pop();
 			axios.post('/games/' + id + '/add-player', {
 				players: this.players,
