@@ -50234,8 +50234,7 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 				//Assign the response data to the variable 'response_data'
 				var response_data = response.data.game[0];
 
-				//Assign each key's value to the view if it is not null 
-				//e.g. name, players, movies, guesses, scores
+				//Assign game information to the view if the key is not null 
 				var _iteratorNormalCompletion = true;
 				var _didIteratorError = false;
 				var _iteratorError = undefined;
@@ -50268,8 +50267,6 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 			});
 		},
 		addPlayer: function addPlayer() {
-			var _this2 = this;
-
 			//Retrieve the newPlayer value and push it to the player array
 			var newPlayer = this.newPlayer;
 			this.players.push(newPlayer);
@@ -50294,18 +50291,12 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 				guesses: this.guesses,
 				scores: this.scores
 			}).then(function (response) {
-				_this2.reset();
-				_this2.players.push(response.data);
-				_this2.overall_scores.push(response.data);
-				_this2.guesses.push(response.data);
-				_this2.scores.push(response.data);
+				console.log(response);
 			}).catch(function (error) {
 				console.error(error);
 			});
 		},
 		addMovie: function addMovie() {
-			var _this3 = this;
-
 			//Retrieve the newMovie value and push it to the movie array
 			var newMovie = this.newMovie;
 			this.movies.push(newMovie);
@@ -50325,10 +50316,10 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 			this.scores.push(score);
 			this.critic_scores.push("0");
 
-			//reset newMovie variable
+			//Reset newMovie variable
 			this.newMovie = '';
 
-			//push information to database
+			//Push updated information to database
 			var id = window.location.href.split('/home#/games/').pop();
 			axios.post('/games/' + id + '/add-movie', {
 				movies: this.movies,
@@ -50336,11 +50327,7 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 				scores: this.scores,
 				critic_scores: this.critic_scores
 			}).then(function (response) {
-				_this3.reset();
-				_this3.movies.push(response.data);
-				_this3.guesses.push(response.data);
-				_this3.scores.push(response.data);
-				_this3.critic_scores.push(response.data);
+				console.log(response);
 			}).catch(function (error) {
 				console.error(error);
 			});
@@ -50355,7 +50342,7 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 			$("#instructions_model").modal("show");
 		},
 		calculateMovie: function calculateMovie() {
-			var _this4 = this;
+			var _this2 = this;
 
 			//Loop through guesses array and critic_scores array to calculate the score of each player for each game
 			//The score value is caluclated by taking the absolute value of the difference between critic_scores and guesses
@@ -50388,15 +50375,13 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 				overall_scores: this.overall_scores
 			}).then(function (response) {
 				$("#play_movie_model").modal("hide");
-				_this4.$forceUpdate();
-				_this4.reset();
-				_this4.guesses.push(response.data);
-				_this4.critic_scores.push(response.data);
-				_this4.scores.push(response.data);
-				_this4.overall_scores.push(response.data);
+				_this2.$forceUpdate();
 			}).catch(function (error) {
 				console.error(error);
 			});
+		},
+		resetGame: function resetGame() {
+			this.newGame = '';
 		}
 	}
 });
@@ -50457,7 +50442,11 @@ var render = function() {
                         expression: "newPlayer"
                       }
                     ],
-                    attrs: { type: "text", name: "player" },
+                    attrs: {
+                      type: "text",
+                      name: "player",
+                      autocomplete: "off"
+                    },
                     domProps: { value: _vm.newPlayer },
                     on: {
                       input: function($event) {
@@ -50896,8 +50885,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 	data: function data() {
@@ -51089,54 +51076,55 @@ var render = function() {
                           _vm._v("New Game:")
                         ]),
                         _vm._v(" "),
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.game.name,
-                              expression: "game.name"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: {
-                            type: "text",
-                            name: "name",
-                            id: "name",
-                            placeholder: "Game Name"
-                          },
-                          domProps: { value: _vm.game.name },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
+                        _c(
+                          "form",
+                          {
+                            staticClass: "mb-2",
+                            attrs: { method: "post" },
+                            on: {
+                              submit: function($event) {
+                                $event.preventDefault()
+                                return _vm.createGame($event)
                               }
-                              _vm.$set(_vm.game, "name", $event.target.value)
                             }
-                          }
-                        })
+                          },
+                          [
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.game.name,
+                                  expression: "game.name"
+                                }
+                              ],
+                              attrs: {
+                                type: "text",
+                                name: "movie",
+                                placeholder: "Game Name"
+                              },
+                              domProps: { value: _vm.game.name },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.$set(
+                                    _vm.game,
+                                    "name",
+                                    $event.target.value
+                                  )
+                                }
+                              }
+                            }),
+                            _c(
+                              "button",
+                              { staticClass: "button btn btn-success" },
+                              [_vm._v("Add game")]
+                            )
+                          ]
+                        )
                       ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "modal-footer" }, [
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-default",
-                          attrs: { type: "button", "data-dismiss": "modal" }
-                        },
-                        [_vm._v(" Close")]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-primary",
-                          attrs: { type: "button" },
-                          on: { click: _vm.createGame }
-                        },
-                        [_vm._v("Add Game")]
-                      )
                     ])
                   ])
                 ]

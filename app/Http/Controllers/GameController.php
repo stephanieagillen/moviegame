@@ -106,7 +106,7 @@ class GameController extends Controller
         $game->scores = request('scores');
         $game->save();
         return response()->json([
-            'message' => 'Game updated successfully!'
+            'message' => 'Player added successfully!'
         ], 200);
     }
 
@@ -123,7 +123,7 @@ class GameController extends Controller
         $game->critic_scores = request('critic_scores');
         $game->save();
         return response()->json([
-            'message' => 'Game updated successfully!'
+            'message' => 'Movie added successfully!'
         ], 200);
     }
 

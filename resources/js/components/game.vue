@@ -11,7 +11,7 @@
 					<div class="row">
 						<div class="col-md-4">
 							<form @submit.prevent="addPlayer" method="post" class="mb-2">
-								<input type="text" v-model="newPlayer" name="player"><button class="button btn btn-success">Add player</button>
+								<input type="text" v-model="newPlayer" name="player" autocomplete="off"><button class="button btn btn-success">Add player</button>
 							</form>
 							<div class="d-inline-block mr-4" v-if="players.length > 0">
 								<u><p>Player</p></u>
@@ -124,8 +124,7 @@ export default {
 					//Assign the response data to the variable 'response_data'
 					const response_data = response.data.game[0];
 
-					//Assign each key's value to the view if it is not null 
-					//e.g. name, players, movies, guesses, scores
+					//Assign game information to the view if the key is not null 
 					for(const[key, value] of Object.entries(response_data)){
 						if(response_data[key] != null) this[key] = value;
 					}
@@ -157,13 +156,9 @@ export default {
 				scores: this.scores
 			})
 				.then(response => {
-					this.reset();
-					this.players.push(response.data);
-					this.overall_scores.push(response.data);
-					this.guesses.push(response.data);
-					this.scores.push(response.data);
+					console.log(response);
 				})
-			.catch(error => {
+				.catch(error => {
                    console.error(error);
                });
            },
@@ -187,10 +182,10 @@ export default {
 			this.scores.push(score);
 			this.critic_scores.push("0");
 
-			//reset newMovie variable
+			//Reset newMovie variable
 			this.newMovie = '';
 
-			//push information to database
+			//Push updated information to database
 			let id = window.location.href.split('/home#/games/').pop();
 			axios.post('/games/' + id + '/add-movie', {
 				movies: this.movies,
@@ -199,16 +194,11 @@ export default {
 				critic_scores: this.critic_scores
 			})
 				.then(response => {
-					this.reset();
-					this.movies.push(response.data);
-					this.guesses.push(response.data);
-					this.scores.push(response.data);
-					this.critic_scores.push(response.data);
+					console.log(response);
 				})
-			.catch(error => {
+				.catch(error => {
                    console.error(error);
                });
-
 		},
 		initPlayMovie(index){
 			//Show movie model
@@ -253,16 +243,14 @@ export default {
 				.then(response => {
 					$("#play_movie_model").modal("hide");
 					this.$forceUpdate();
-					this.reset();
-					this.guesses.push(response.data);
-					this.critic_scores.push(response.data);
-					this.scores.push(response.data);
-					this.overall_scores.push(response.data);
 				})
-			.catch(error => {
+				.catch(error => {
                    console.error(error);
                });
 	   },
+			resetGame(){
+				this.newGame='';
+			},
 	   
     }
 }

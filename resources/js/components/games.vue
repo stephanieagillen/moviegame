@@ -34,12 +34,10 @@
 								<div class="modal-body">
 									<div class="form-group">
 										<label for="name">New Game:</label>
-										<input type="text" name="name" id="name" placeholder="Game Name" class="form-control" v-model="game.name">
+										<form @submit.prevent="createGame" method="post" class="mb-2">
+											<input type="text" v-model="game.name" name="movie" placeholder="Game Name"><button class="button btn btn-success">Add game</button>
+										</form>
 									</div>
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-default" data-dismiss="modal"> Close</button>
-									<button type="button" @click="createGame" class="btn btn-primary">Add Game</button>
 								</div>
 							</div>
 						</div>
