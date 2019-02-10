@@ -9,7 +9,7 @@
 				</div>
 				<div class="table">
 					<div class="row">
-						<div class="col-md-4">
+						<div class="col-lg-4 col-sm-8">
 							<form @submit.prevent="addPlayer" method="post" class="mb-2">
 								<input type="text" v-model="newPlayer" name="player" autocomplete="off"><button class="button btn btn-success">Add player</button>
 							</form>
@@ -30,9 +30,9 @@
 								</div>
 							</div>
 						</div>
-						<div class="col-md-2">
+						<div class="col-lg-2 col-sm-0">
 						</div>
-						<div class="col-md-4">
+						<div class="col-lg-4 col-sm-8">
 							<div v-if="players.length > 0">
 								<form @submit.prevent="addMovie" method="post" class="mb-2">
 									<input type="text" v-model="newMovie" name="movie"><button class="button btn btn-success btn-add">Add Movie</button>
@@ -118,36 +118,39 @@ export default {
 	methods: {
 		readGame(){
 			//Retrieve game information from database
-			let id = window.location.href.split('/home#/games/').pop();
+			const id = window.location.href.split('/home#/games/').pop();
 			axios.get('/games/'+ id)
 				.then(response => {
 					//Assign the response data to the variable 'response_data'
 					const response_data = response.data.game[0];
 
 					//Assign game information to the view if the key is not null 
-					for(const[key, value] of Object.entries(response_data)){
+					for(let[key, value] of Object.entries(response_data)){
 						if(response_data[key] != null) this[key] = value;
 					}
-			});
+				})
+				.catch(error => {
+                   console.error(error);
+               });
 		},
 		addPlayer(){
-			//Retrieve the newPlayer value and push it to the player array
+			//Retrieve the newPlayer input value and push it to the player array
 			let newPlayer = this.newPlayer;
 			this.players.push(newPlayer);
 			this.newPlayer = '';
 
-			//Add an index to overall_scores array
+			//Add an index to the overall_scores array
 			this.overall_scores.push(0);
 
 			//If there are movies, add indexes to the scores and guesses arrays
 			if(this.movies.length > 0) {
-				for(let i=0; this.movies.length>i; i++) {
-						this.scores[i].push(0);
-						this.guesses[i].push(0);
+				for(let [i,movie] of this.movies.entries()){
+					this.scores[i].push(0);
+					this.guesses[i].push(0);
 				}
 			}
 
-			//Push information to database
+			//Push updated information to the database
 			let id = window.location.href.split('/home#/games/').pop();
 			axios.post('/games/' + id + '/add-player', {
 				players: this.players,
@@ -172,20 +175,21 @@ export default {
 			let guess=[];
 			let score=[];
 
-			//Add an index to overall_scores array
-			for(let j=0; this.players.length>j; j++){
-					score.push(0);
-					guess.push(0);
-				}
+			//Add an index to the overall_scores array
+			for(let [i, player] of this.players.entries()) {
+				score.push(0);
+				guess.push(0);
+			}
+
 			//Add indexes to the scores and guesses arrays
 			this.guesses.push(guess);
 			this.scores.push(score);
 			this.critic_scores.push("0");
 
-			//Reset newMovie variable
+			//Reset newMovie input variable
 			this.newMovie = '';
 
-			//Push updated information to database
+			//Push updated information to the database
 			let id = window.location.href.split('/home#/games/').pop();
 			axios.post('/games/' + id + '/add-movie', {
 				movies: this.movies,
@@ -211,23 +215,23 @@ export default {
 		},
 		calculateMovie(){
 			//Loop through guesses array and critic_scores array to calculate the score of each player for each game
-			//The score value is caluclated by taking the absolute value of the difference between critic_scores and guesses
-			//If the score value returns 0, give the player a score of -5 
-			for(let i=0; i < this.movies.length; i++){
-				for(let j=0; j < this.players.length; j++){
+			for(let [i,movie] of this.movies.entries()){
+				for([j,player] of this.players.entries()){
+					//The score value is caluclated by taking the absolute value of the difference between critic_scores and guesses
 					this.scores[i][j] = Math.abs(this.critic_scores[i]-this.guesses[i][j]);
+					//If the score value returns 0, give the player a score of -5 
 					if ((this.scores[i][j] == 0) && (typeof this.critic_scores[i]) === 'number') this.scores[i][j] = -5;
 				}
 			}
 
 			//Reset the overall score values to 0 so they can be recalculated in the following function
-			for(let j=0; j<this.players.length; j++){
-				this.overall_scores[j] = 0;
+			for(let [i,player] of this.players.entries()){
+				this.overall_scores[i] = 0;
 			}
 
 			//Add all of the scores for each player
-			for(let j=0; j<this.players.length; j++){
-				for(let i=0; i<this.movies.length; i++){
+			for(let [j,player] of this.players.entries()){
+				for(let [i,movie] of this.movies.entries()){
 					this.overall_scores[j] += this.scores[i][j];
 				}
 			}
@@ -247,11 +251,7 @@ export default {
 				.catch(error => {
                    console.error(error);
                });
-	   },
-			resetGame(){
-				this.newGame='';
-			},
-	   
+	   }
     }
 }
 </script>

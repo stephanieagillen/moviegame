@@ -50264,26 +50264,54 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 						}
 					}
 				}
+			}).catch(function (error) {
+				console.error(error);
 			});
 		},
 		addPlayer: function addPlayer() {
-			//Retrieve the newPlayer value and push it to the player array
+			//Retrieve the newPlayer input value and push it to the player array
 			var newPlayer = this.newPlayer;
 			this.players.push(newPlayer);
 			this.newPlayer = '';
 
-			//Add an index to overall_scores array
+			//Add an index to the overall_scores array
 			this.overall_scores.push(0);
 
 			//If there are movies, add indexes to the scores and guesses arrays
 			if (this.movies.length > 0) {
-				for (var i = 0; this.movies.length > i; i++) {
-					this.scores[i].push(0);
-					this.guesses[i].push(0);
+				var _iteratorNormalCompletion2 = true;
+				var _didIteratorError2 = false;
+				var _iteratorError2 = undefined;
+
+				try {
+					for (var _iterator2 = this.movies.entries()[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+						var _ref3 = _step2.value;
+
+						var _ref4 = _slicedToArray(_ref3, 2);
+
+						var i = _ref4[0];
+						var movie = _ref4[1];
+
+						this.scores[i].push(0);
+						this.guesses[i].push(0);
+					}
+				} catch (err) {
+					_didIteratorError2 = true;
+					_iteratorError2 = err;
+				} finally {
+					try {
+						if (!_iteratorNormalCompletion2 && _iterator2.return) {
+							_iterator2.return();
+						}
+					} finally {
+						if (_didIteratorError2) {
+							throw _iteratorError2;
+						}
+					}
 				}
 			}
 
-			//Push information to database
+			//Push updated information to the database
 			var id = window.location.href.split('/home#/games/').pop();
 			axios.post('/games/' + id + '/add-player', {
 				players: this.players,
@@ -50306,20 +50334,48 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 			var guess = [];
 			var score = [];
 
-			//Add an index to overall_scores array
-			for (var j = 0; this.players.length > j; j++) {
-				score.push(0);
-				guess.push(0);
+			//Add an index to the overall_scores array
+			var _iteratorNormalCompletion3 = true;
+			var _didIteratorError3 = false;
+			var _iteratorError3 = undefined;
+
+			try {
+				for (var _iterator3 = this.players.entries()[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+					var _ref5 = _step3.value;
+
+					var _ref6 = _slicedToArray(_ref5, 2);
+
+					var i = _ref6[0];
+					var player = _ref6[1];
+
+					score.push(0);
+					guess.push(0);
+				}
+
+				//Add indexes to the scores and guesses arrays
+			} catch (err) {
+				_didIteratorError3 = true;
+				_iteratorError3 = err;
+			} finally {
+				try {
+					if (!_iteratorNormalCompletion3 && _iterator3.return) {
+						_iterator3.return();
+					}
+				} finally {
+					if (_didIteratorError3) {
+						throw _iteratorError3;
+					}
+				}
 			}
-			//Add indexes to the scores and guesses arrays
+
 			this.guesses.push(guess);
 			this.scores.push(score);
 			this.critic_scores.push("0");
 
-			//Reset newMovie variable
+			//Reset newMovie input variable
 			this.newMovie = '';
 
-			//Push updated information to database
+			//Push updated information to the database
 			var id = window.location.href.split('/home#/games/').pop();
 			axios.post('/games/' + id + '/add-movie', {
 				movies: this.movies,
@@ -50345,28 +50401,158 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 			var _this2 = this;
 
 			//Loop through guesses array and critic_scores array to calculate the score of each player for each game
-			//The score value is caluclated by taking the absolute value of the difference between critic_scores and guesses
-			//If the score value returns 0, give the player a score of -5 
-			for (var i = 0; i < this.movies.length; i++) {
-				for (var j = 0; j < this.players.length; j++) {
-					this.scores[i][j] = Math.abs(this.critic_scores[i] - this.guesses[i][j]);
-					if (this.scores[i][j] == 0 && typeof this.critic_scores[i] === 'number') this.scores[i][j] = -5;
+			var _iteratorNormalCompletion4 = true;
+			var _didIteratorError4 = false;
+			var _iteratorError4 = undefined;
+
+			try {
+				for (var _iterator4 = this.movies.entries()[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+					var _ref7 = _step4.value;
+
+					var _ref8 = _slicedToArray(_ref7, 2);
+
+					var i = _ref8[0];
+					var movie = _ref8[1];
+					var _iteratorNormalCompletion7 = true;
+					var _didIteratorError7 = false;
+					var _iteratorError7 = undefined;
+
+					try {
+						for (var _iterator7 = this.players.entries()[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+							var _ref13 = _step7.value;
+
+							var _ref14 = _slicedToArray(_ref13, 2),
+							    j = _ref14[0],
+							    player = _ref14[1];
+
+							//The score value is caluclated by taking the absolute value of the difference between critic_scores and guesses
+							this.scores[i][j] = Math.abs(this.critic_scores[i] - this.guesses[i][j]);
+							//If the score value returns 0, give the player a score of -5 
+							if (this.scores[i][j] == 0 && typeof this.critic_scores[i] === 'number') this.scores[i][j] = -5;
+						}
+					} catch (err) {
+						_didIteratorError7 = true;
+						_iteratorError7 = err;
+					} finally {
+						try {
+							if (!_iteratorNormalCompletion7 && _iterator7.return) {
+								_iterator7.return();
+							}
+						} finally {
+							if (_didIteratorError7) {
+								throw _iteratorError7;
+							}
+						}
+					}
+				}
+
+				//Reset the overall score values to 0 so they can be recalculated in the following function
+			} catch (err) {
+				_didIteratorError4 = true;
+				_iteratorError4 = err;
+			} finally {
+				try {
+					if (!_iteratorNormalCompletion4 && _iterator4.return) {
+						_iterator4.return();
+					}
+				} finally {
+					if (_didIteratorError4) {
+						throw _iteratorError4;
+					}
 				}
 			}
 
-			//Reset the overall score values to 0 so they can be recalculated in the following function
-			for (var _j = 0; _j < this.players.length; _j++) {
-				this.overall_scores[_j] = 0;
-			}
+			var _iteratorNormalCompletion5 = true;
+			var _didIteratorError5 = false;
+			var _iteratorError5 = undefined;
 
-			//Add all of the scores for each player
-			for (var _j2 = 0; _j2 < this.players.length; _j2++) {
-				for (var _i = 0; _i < this.movies.length; _i++) {
-					this.overall_scores[_j2] += this.scores[_i][_j2];
+			try {
+				for (var _iterator5 = this.players.entries()[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+					var _ref9 = _step5.value;
+
+					var _ref10 = _slicedToArray(_ref9, 2);
+
+					var _i = _ref10[0];
+					var player = _ref10[1];
+
+					this.overall_scores[_i] = 0;
+				}
+
+				//Add all of the scores for each player
+			} catch (err) {
+				_didIteratorError5 = true;
+				_iteratorError5 = err;
+			} finally {
+				try {
+					if (!_iteratorNormalCompletion5 && _iterator5.return) {
+						_iterator5.return();
+					}
+				} finally {
+					if (_didIteratorError5) {
+						throw _iteratorError5;
+					}
 				}
 			}
 
-			//Push calculated information to the database
+			var _iteratorNormalCompletion6 = true;
+			var _didIteratorError6 = false;
+			var _iteratorError6 = undefined;
+
+			try {
+				for (var _iterator6 = this.players.entries()[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+					var _ref11 = _step6.value;
+
+					var _ref12 = _slicedToArray(_ref11, 2);
+
+					var _j = _ref12[0];
+					var _player = _ref12[1];
+					var _iteratorNormalCompletion8 = true;
+					var _didIteratorError8 = false;
+					var _iteratorError8 = undefined;
+
+					try {
+						for (var _iterator8 = this.movies.entries()[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+							var _ref15 = _step8.value;
+
+							var _ref16 = _slicedToArray(_ref15, 2);
+
+							var _i2 = _ref16[0];
+							var _movie = _ref16[1];
+
+							this.overall_scores[_j] += this.scores[_i2][_j];
+						}
+					} catch (err) {
+						_didIteratorError8 = true;
+						_iteratorError8 = err;
+					} finally {
+						try {
+							if (!_iteratorNormalCompletion8 && _iterator8.return) {
+								_iterator8.return();
+							}
+						} finally {
+							if (_didIteratorError8) {
+								throw _iteratorError8;
+							}
+						}
+					}
+				}
+
+				//Push calculated information to the database
+			} catch (err) {
+				_didIteratorError6 = true;
+				_iteratorError6 = err;
+			} finally {
+				try {
+					if (!_iteratorNormalCompletion6 && _iterator6.return) {
+						_iterator6.return();
+					}
+				} finally {
+					if (_didIteratorError6) {
+						throw _iteratorError6;
+					}
+				}
+			}
+
 			var id = window.location.href.split('/home#/games/').pop();
 			axios.post('/calculate/' + id, {
 				guesses: this.guesses,
@@ -50379,9 +50565,6 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 			}).catch(function (error) {
 				console.error(error);
 			});
-		},
-		resetGame: function resetGame() {
-			this.newGame = '';
 		}
 	}
 });
@@ -50419,7 +50602,7 @@ var render = function() {
         _vm._v(" "),
         _c("div", { staticClass: "table" }, [
           _c("div", { staticClass: "row" }, [
-            _c("div", { staticClass: "col-md-4" }, [
+            _c("div", { staticClass: "col-lg-4 col-sm-8" }, [
               _c(
                 "form",
                 {
@@ -50496,9 +50679,9 @@ var render = function() {
                 : _vm._e()
             ]),
             _vm._v(" "),
-            _c("div", { staticClass: "col-md-2" }),
+            _c("div", { staticClass: "col-lg-2 col-sm-0" }),
             _vm._v(" "),
-            _c("div", { staticClass: "col-md-4" }, [
+            _c("div", { staticClass: "col-lg-4 col-sm-8" }, [
               _vm.players.length > 0
                 ? _c("div", [
                     _c(
@@ -50912,20 +51095,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 				name: this.game.name
 			}).then(function (response) {
 				var game_id = response.data.id;
-				_this.reset();
-				_this.games.push(response.data);
 				$("#add_game_model").modal("hide");
 				//go to the game
 				_this.$router.push({ name: 'gameIndex', params: { id: game_id } });
 			}).catch(function (error) {
-				_this.errors = [];
-				if (error.response.data.errors && error.response.data.errors.name) {
-
-					_this.errors.push(error.response.data.errors.name[0]);
-				}
-				if (error.response.data.errors && error.response.data.errors.description) {
-					_this.errors.push(error.response.data.errors.description[0]);
-				}
+				console.error(error);
 			});
 		},
 		deleteGame: function deleteGame(id) {
@@ -50935,15 +51109,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			axios.delete('/games/' + id).then(function (response) {
 				_this2.readGames();
 			}).catch(function (error) {
-
-				_this2.errors = [];
-				if (error.response.data.errors && error.response.data.errors.name) {
-
-					_this2.errors.push(error.response.data.errors.name[0]);
-				}
-				if (error.response.data.errors && error.response.data.errors.description) {
-					_this2.errors.push(error.response.data.errors.description[0]);
-				}
+				console.error(error);
 			});
 		},
 		reset: function reset() {
@@ -50955,6 +51121,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			//retrieve all of the users games from the database
 			axios.get('/games-list').then(function (response) {
 				_this3.games = response.data.games;
+			}).catch(function (error) {
+				console.error(error);
 			});
 		}
 	}
@@ -51119,7 +51287,9 @@ var render = function() {
                             }),
                             _c(
                               "button",
-                              { staticClass: "button btn btn-success" },
+                              {
+                                staticClass: "button btn btn-success btn-modal"
+                              },
                               [_vm._v("Add game")]
                             )
                           ]

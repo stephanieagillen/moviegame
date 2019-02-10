@@ -35,7 +35,7 @@
 									<div class="form-group">
 										<label for="name">New Game:</label>
 										<form @submit.prevent="createGame" method="post" class="mb-2">
-											<input type="text" v-model="game.name" name="movie" placeholder="Game Name"><button class="button btn btn-success">Add game</button>
+											<input type="text" v-model="game.name" name="movie" placeholder="Game Name"><button class="button btn btn-success btn-modal">Add game</button>
 										</form>
 									</div>
 								</div>
@@ -73,25 +73,13 @@
 				})
 					.then(response => {
 						let game_id = response.data.id;
-						this.reset();
-						this.games.push(response.data);
 						$("#add_game_model").modal("hide");
 						//go to the game
 						this.$router.push({ name: 'gameIndex', params: { id: game_id}});
 					})
-				.catch(error => {
-                       this.errors = [];
-                       if (error.response.data.errors && error.response.data.errors.name) {
- 
-                           this.errors.push(error.response.data.errors.name[0]);
-                       }
-				if (error.response.data.errors && error.response.data.errors.description)
-                      {
-                           this.errors.push(error.response.data.errors.description[0]);
-                       }
-                   });
-				
-
+					.catch(error => {
+					console.error(error);
+					});
            },
            deleteGame(id){
            		//delete game in database
@@ -99,18 +87,9 @@
 					.then(response => {
 						this.readGames();
 					})
-				.catch(error => {
- 
-                       this.errors = [];
-                       if (error.response.data.errors && error.response.data.errors.name) {
- 
-                           this.errors.push(error.response.data.errors.name[0]);
-                       }
-				if (error.response.data.errors && error.response.data.errors.description)
-                      {
-                           this.errors.push(error.response.data.errors.description[0]);
-                       }
-                   });
+					.catch(error => {
+					console.error(error);
+					});
 				
            },
 			reset(){
@@ -121,6 +100,9 @@
 				axios.get('/games-list')
 					.then(response => {
 						this.games = response.data.games;
+					})
+					.catch(error => {
+					console.error(error);
 					});
 			}
 		}
