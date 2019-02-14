@@ -11,7 +11,7 @@
 					<div class="row">
 						<div class="col-lg-4 col-sm-8">
 							<form @submit.prevent="addPlayer" method="post" class="mb-2">
-								<input type="text" v-model="newPlayer" name="player" autocomplete="off"><button class="button btn btn-success">Add player</button>
+								<input required type="text" v-model="newPlayer" name="player" placeholder="Enter player"><button class="button btn btn-success">Add player</button>
 							</form>
 							<div class="d-inline-block mr-4" v-if="players.length > 0">
 								<u><p>Player</p></u>
@@ -35,7 +35,7 @@
 						<div class="col-lg-4 col-sm-8">
 							<div v-if="players.length > 0">
 								<form @submit.prevent="addMovie" method="post" class="mb-2">
-									<input type="text" v-model="newMovie" name="movie"><button class="button btn btn-success btn-add">Add Movie</button>
+									<input required type="text" v-model="newMovie" name="movie" placeholder="Enter movie"><button class="button btn btn-success btn-add">Add Movie</button>
 								</form>
 							</div>
 							<div v-if="movies">

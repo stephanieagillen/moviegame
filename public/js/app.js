@@ -50626,9 +50626,10 @@ var render = function() {
                       }
                     ],
                     attrs: {
+                      required: "",
                       type: "text",
                       name: "player",
-                      autocomplete: "off"
+                      placeholder: "Enter player"
                     },
                     domProps: { value: _vm.newPlayer },
                     on: {
@@ -50706,7 +50707,12 @@ var render = function() {
                               expression: "newMovie"
                             }
                           ],
-                          attrs: { type: "text", name: "movie" },
+                          attrs: {
+                            required: "",
+                            type: "text",
+                            name: "movie",
+                            placeholder: "Enter movie"
+                          },
                           domProps: { value: _vm.newMovie },
                           on: {
                             input: function($event) {
