@@ -25,9 +25,3 @@ Route::post('/games/{id}/add-movie', 'GameController@addMovie');
 Route::post('/calculate/{id}', 'GameController@calculate');
 Route::get('/game-list', 'GameController@home');
 
-
-// Route::get('/games/{id}', 'GameController@game');
-// Route::get('/games/show/{id}', 'GameController@show');
-
-
-
